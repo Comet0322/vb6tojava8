@@ -52,42 +52,15 @@ Wait for `ARCHITECTURE.md`, ADR files, and the HANDOFF section. Check Go/No-Go b
 
 ### Phase 3 — Implementation
 
-Run agents in sequence:
-
-**3a. tdd-guide**
+Invoke agent: `vb6-java-implementer`
 
 Pass:
 
 - `ARCHITECTURE.md` and all ADR files
-- Java package manual path
-- If re-entering due to BLOCK: include `VALIDATION_REPORT.md` and REPAIR_ROUTING instructions
-
-Instructions to tdd-guide:
-
-- Use `mvn test` to run tests (not `npm test`)
-- Generate all 5 class files: `BatchRun.java`, `CreateTable.java`, `Download.java`, `Process.java`, `Upload.java`
-- Write test classes: `BatchRunTest.java`, `CreateTableTest.java`, `DownloadTest.java`, `ProcessTest.java`, `UploadTest.java`
-- Each business rule from VB6_ANALYSIS_REPORT.md Business Rules Catalog must have a test case
-- Target 80%+ JaCoCo line coverage (`mvn verify`)
-
-**3b. vb6-java-reviewer**
-
-Pass:
-
-- Generated Java source directory
-- `ARCHITECTURE.md`
-
-If verdict is BLOCK: stop Phase 3, surface the findings to the user. Do not proceed to Phase 4.
-If verdict is APPROVE or WARNING: continue.
-
-**3c. java-build-resolver** (conditional)
-
-Invoke only if `mvn compile` or `mvn test` failed during 3a or 3b.
-
-Pass:
-
-- Build error output
-- Java source directory
+- `VB6_ANALYSIS_REPORT.md` (business rules for test coverage)
+- Java package manual path (`--java-pkg-doc`)
+- `JAVA_OUT` = value of `--java-out`
+- If re-entering due to BLOCK: include `VALIDATION_REPORT.md` with REPAIR_ROUTING
 
 ---
 
@@ -126,8 +99,8 @@ vb6-analyzer
     ↓ VB6_ANALYSIS_REPORT.md
 architect (+ skill: vb6-to-java8-patterns)
     ↓ ARCHITECTURE.md + ADRs
-tdd-guide → vb6-java-reviewer → [java-build-resolver if build fails]
-    ↓ Java source + tests
+vb6-java-implementer  (TDD → self-review → inline build-fix, per class)
+    ↓ Java source + tests + IMPLEMENTATION_SUMMARY.md
 etl-validator
     ├─ CERTIFY   → MIGRATION_REPORT.md  ✓
     ├─ INVESTIGATE → stop for human review

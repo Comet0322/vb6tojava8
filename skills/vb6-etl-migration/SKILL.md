@@ -79,33 +79,18 @@ Phase 4: etl-validator         reads: VB6 reference output + Java output
 
 ### Phase 3 — Implementation
 
-**Agents**: `tdd-guide` → `vb6-java-reviewer` → `java-build-resolver`
-**Inputs**: `ARCHITECTURE.md`, ADRs, Java package manual
-**Outputs**: Java source files for all 5 classes + test suite
+**Agent**: `vb6-java-implementer`
+**Inputs**: `ARCHITECTURE.md`, ADRs, Java package manual, `VB6_ANALYSIS_REPORT.md`
+**Outputs**: Java source files for all 5 classes + test suite + `IMPLEMENTATION_SUMMARY.md`
 
-**tdd-guide instructions**:
-
-- Use `mvn test` (not `npm test`) to run tests
-- Test each of the 5 classes independently: `CreateTableTest`, `DownloadTest`, `ProcessTest`, `UploadTest`, `BatchRunTest`
-- Target: 80%+ JaCoCo line coverage (`mvn verify` with JaCoCo plugin)
-- Each business rule from the Business Rules Catalog must have a dedicated test case
-
-**vb6-java-reviewer instructions**:
-
-- Read `ARCHITECTURE.md` before reviewing
-- Focus on migration correctness (data types, error handling) and 5-class compliance
-- Do not block on Spring Boot patterns — this is not a Spring project
-
-**java-build-resolver instructions**:
-
-- Only invoked if `mvn compile` or `mvn test` fails
-- Fix compilation errors and dependency issues, not logic
+The agent works class by class (`CreateTable → Download → Process → Upload → BatchRun`), completing TDD + self-review + inline build-fix for each class before moving to the next.
 
 **Success criteria**:
 
-- `mvn verify` passes with 80%+ line coverage
-- `vb6-java-reviewer` verdict is APPROVE or WARNING (no BLOCK)
-- All 5 class files exist in the output directory
+- `mvn verify` passes with 80%+ JaCoCo line coverage
+- Self-review found no unresolved HIGH issues
+- All 5 class files and test classes exist in the output directory
+- `IMPLEMENTATION_SUMMARY.md` produced
 
 ---
 
